@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planilha Agronômica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-emerald-700 text-center mb-8 sm:mb-12">
+            PLANILHA AGRONÔMICA
+        </h1>
+
+        <div id="calculator-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-6">
+            <button data-calculator="semeadura_graos" class="calculator-button flex flex-col items-center justify-start p-3 sm:p-4 h-36 sm:h-40">
+                <span class="text-3xl sm:text-4xl mb-2">🌾</span>
+                <span class="text-xs sm:text-sm font-semibold text-center text-emerald-700">Semeadura (Grãos)</span>
+            </button>
+            <button data-calculator="semeadura_forrageiras" class="calculator-button flex flex-col items-center justify-start p-3 sm:p-4 h-36 sm:h-40">
+                <span class="text-3xl sm:text-4xl mb-2">🌿</span>
+                <span class="text-xs sm:text-sm font-semibold text-center text-emerald-700">Semeadura (Forrageiras)</span>
+            </button>
+            <button data-calculator="tratamento_sementes" class="calculator-button flex flex-col items-center justify-start p-3 sm:p-4 h-36 sm:h-40">
+                <span class="text-3xl sm:text-4xl mb-2">🛡️</span> <span class="text-xs sm:text-sm font-semibold text-center text-emerald-700">Trat. de Sementes</span>
+            </button>
+            <button data-calculator="calagem_camg" class="calculator-button flex flex-col items-center justify-start p-3 sm:p-4 h-36 sm:h-40">
+                <span class="text-3xl sm:text-4xl mb-2">🧱</span>
+                <span class="text-xs sm:text-sm font-semibold text-center text-emerald-700">Calagem Ca/Mg</span>
+            </button>
+            <button data-calculator="calagem_v" class="calculator-button flex flex-col items-center justify-start p-3 sm:p-4 h-36 sm:h-40">
+                <span class="text-3xl sm:text-4xl mb-2">🧪</span>
+                <span class="text-xs sm:text-sm font-semibold text-center text-emerald-700">Calagem V%</span>
+            </button>
+            <button data-calculator="calibracao_pulverizador" class="calculator-button flex flex-col items-center justify-start p-3 sm:p-4 h-36 sm:h-40">
+                <span class="text-3xl sm:text-4xl mb-2">🚿</span>
+                <span class="text-xs sm:text-sm font-semibold text-center text-emerald-700">Calibração Pulverizad.</span>
+            </button>
+            <button data-calculator="formulacao_adubos" class="calculator-button flex flex-col items-center justify-start p-3 sm:p-4 h-36 sm:h-40">
+                <span class="text-3xl sm:text-4xl mb-2">⚗️</span>
+                <span class="text-xs sm:text-sm font-semibold text-center text-emerald-700">Formulação de adubos</span>
+            </button>
+            <button data-calculator="gestao_aplicacao" class="calculator-button flex flex-col items-center justify-start p-3 sm:p-4 h-36 sm:h-40">
+                <span class="text-3xl sm:text-4xl mb-2">🚜</span>
+                <span class="text-xs sm:text-sm font-semibold text-center text-emerald-700">Gestão de Aplicação</span>
+            </button>
+            <button data-calculator="produtividade_soja" class="calculator-button flex flex-col items-center justify-start p-3 sm:p-4 h-36 sm:h-40">
+                <span class="text-3xl sm:text-4xl mb-2">🌱</span>
+                <span class="text-xs sm:text-sm font-semibold text-center text-emerald-700">Produtiv. de Soja</span>
+            </button>
+            <button data-calculator="soja_cesb" class="calculator-button flex flex-col items-center justify-start p-3 sm:p-4 h-36 sm:h-40">
+                <span class="text-3xl sm:text-4xl mb-2">🏆</span>
+                <span class="text-xs sm:text-sm font-semibold text-center text-emerald-700">Soja (CESB)</span>
+            </button>
+            <button data-calculator="produtividade_milho" class="calculator-button flex flex-col items-center justify-start p-3 sm:p-4 h-36 sm:h-40">
+                <span class="text-3xl sm:text-4xl mb-2">🍿</span>
+                <span class="text-xs sm:text-sm font-semibold text-center text-emerald-700">Produtiv. Milho</span>
+            </button>
+            <button data-calculator="produtividade_algodao" class="calculator-button flex flex-col items-center justify-start p-3 sm:p-4 h-36 sm:h-40">
+                <span class="text-3xl sm:text-4xl mb-2">☁️</span>
+                <span class="text-xs sm:text-sm font-semibold text-center text-emerald-700">Produtivi. Algodão</span>
+            </button>
+        </div>
+
+        <div id="calculator-display-area" class="mt-8 sm:mt-12">
+            
+            <div id="semeadura_graos_calculator" class="calculator-section hidden">
+                <h2 class="text-2xl font-semibold text-emerald-700 mb-6 text-center">Calculadora de Semeadura de Grãos</h2>
+                <form id="seedingForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="sg_talhao" class="block text-sm font-medium text-gray-700 mb-1">Talhão:</label>
+                            <input type="text" id="sg_talhao" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: Pivô 01">
+                        </div>
+                        <div>
+                            <label for="sg_cultivar" class="block text-sm font-medium text-gray-700 mb-1">Cultivar:</label>
+                            <input type="text" id="sg_cultivar" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: Brasmax Lança">
+                        </div>
+                        <div>
+                            <label for="sg_pg" class="block text-sm font-medium text-gray-700 mb-1">PG Semente (%):</label>
+                            <input type="number" id="sg_pg" step="0.1" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: 90">
+                        </div>
+                        <div>
+                            <label for="sg_pms_kg" class="block text-sm font-medium text-gray-700 mb-1">PMS (kg por mil sementes):</label>
+                            <input type="number" id="sg_pms_kg" step="0.001" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: 0.200 (para 200g)">
+                        </div>
+                        <div>
+                            <label for="sg_perdas" class="block text-sm font-medium text-gray-700 mb-1">Estimativa de Perdas (%):</label>
+                            <input type="number" id="sg_perdas" step="0.1" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: 3">
+                        </div>
+                        <div>
+                            <label for="sg_espacamento_linhas_m" class="block text-sm font-medium text-gray-700 mb-1">Espaç. entre Linhas (m):</label>
+                            <input type="number" id="sg_espacamento_linhas_m" step="0.01" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: 0.50">
+                        </div>
+                        <div>
+                            <label for="sg_area_total_ha" class="block text-sm font-medium text-gray-700 mb-1">Área Total do Talhão (ha):</label>
+                            <input type="number" id="sg_area_total_ha" step="0.1" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: 52">
+                        </div>
+                        <div>
+                            <label for="sg_preco_kg_semente" class="block text-sm font-medium text-gray-700 mb-1">Preço/kg de Semente (R$):</label>
+                            <input type="number" id="sg_preco_kg_semente" step="0.01" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: 3.50">
+                        </div>
+                        <div>
+                            <label for="sg_medida_saca_kg" class="block text-sm font-medium text-gray-700 mb-1">Peso da Saca de Sementes (kg):</label>
+                            <input type="number" id="sg_medida_saca_kg" step="1" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: 40">
+                        </div>
+                        <div>
+                            <label for="sg_medida_bag_kg" class="block text-sm font-medium text-gray-700 mb-1">Peso do Big Bag de Sementes (kg):</label>
+                            <input type="number" id="sg_medida_bag_kg" step="1" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: 750">
+                        </div>
+                    </div>
+                    <hr class="my-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-lg font-medium text-emerald-600 mb-2">Cálculo por Sementes/Metro Linear:</h3>
+                            <label for="sg_sementes_metro_linear" class="block text-sm font-medium text-gray-700 mb-1">Nº Sementes / Metro Linear:</label>
+                            <input type="number" id="sg_sementes_metro_linear" step="0.1" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: 18">
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-emerald-600 mb-2">Cálculo por População Desejada:</h3>
+                            <label for="sg_populacao_desejada_ha" class="block text-sm font-medium text-gray-700 mb-1">População Desejada (plantas/ha):</label>
+                            <input type="number" id="sg_populacao_desejada_ha" step="1000" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: 320000">
+                        </div>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-4 mt-6">
+                        <button type="submit" class="btn-calculate w-full sm:w-auto flex-1 justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
+                            Calcular Semeadura
+                        </button>
+                        <button type="button" id="clearSeedingForm" class="btn-clear w-full sm:w-auto flex-1 justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-400">
+                            Limpar Campos
+                        </button>
+                    </div>
+                </form>
+                <div id="seedingError" class="mt-6 p-4 bg-red-50 border border-red-200 rounded-md text-red-700 hidden">
+                    <p>Por favor, preencha todos os campos obrigatórios com valores numéricos válidos.</p>
+                </div>
+                <div id="seedingResultSementesMetro" class="mt-8 hidden">
+                    <h3 class="text-xl font-semibold text-emerald-700 mb-4">Resultados (Baseado no Nº de Sementes/Metro Linear):</h3>
+                    <div class="result-grid">
+                        <div class="result-item"><strong>Nº Sementes/ha:</strong> <span id="res_sm_num_sementes_ha"></span></div>
+                        <div class="result-item"><strong>Pop. Plantas Final/ha:</strong> <span id="res_sm_pop_final_ha"></span></div>
+                        <div class="result-item"><strong>Plantas Finais/m²:</strong> <span id="res_sm_plantas_finais_m2"></span></div>
+                        <div class="result-item"><strong>Plantas Finais/m linear:</strong> <span id="res_sm_plantas_finais_m_linear"></span></div>
+                        <div class="result-item"><strong>Kg Semente/ha (PMS):</strong> <span id="res_sm_kg_semente_ha"></span> kg</div>
+                        <div class="result-item"><strong>Nº Sacas/ha (por peso):</strong> <span id="res_sm_sacas_ha_peso"></span></div>
+                        <div class="result-item"><strong>Nº Bags/ha (por peso):</strong> <span id="res_sm_bags_ha_peso"></span></div>
+                        <div class="result-item"><strong>Kg Semente/Talhão:</strong> <span id="res_sm_kg_semente_talhao"></span> kg</div>
+                        <div class="result-item"><strong>Nº Sacas/Talhão:</strong> <span id="res_sm_sacas_talhao"></span></div>
+                        <div class="result-item"><strong>Nº Bags/Talhão:</strong> <span id="res_sm_bags_talhao"></span></div>
+                        <div class="result-item"><strong>Custo/ha:</strong> R$ <span id="res_sm_custo_ha"></span></div>
+                        <div class="result-item"><strong>Custo/Talhão:</strong> R$ <span id="res_sm_custo_talhao"></span></div>
+                    </div>
+                </div>
+                <div id="seedingResultPopulacaoDesejada" class="mt-8 hidden">
+                    <h3 class="text-xl font-semibold text-emerald-700 mb-4">Resultados (Baseado na População de Plantas Desejada/ha):</h3>
+                    <div class="result-grid">
+                        <div class="result-item"><strong>Nº Sementes a distribuir/ha:</strong> <span id="res_pd_num_sementes_dist_ha"></span></div>
+                        <div class="result-item"><strong>Nº Sementes/Metro Linear:</strong> <span id="res_pd_num_sementes_metro"></span></div>
+                        <div class="result-item"><strong>Pop. Plantas Final Estimada/ha:</strong> <span id="res_pd_pop_final_ha"></span></div>
+                        <div class="result-item"><strong>Plantas Finais Estimadas/m²:</strong> <span id="res_pd_plantas_finais_m2"></span></div>
+                        <div class="result-item"><strong>Plantas Finais Estimadas/m linear:</strong> <span id="res_pd_plantas_finais_m_linear"></span></div>
+                        <div class="result-item"><strong>Kg Semente/ha (PMS):</strong> <span id="res_pd_kg_semente_ha"></span> kg</div>
+                        <div class="result-item"><strong>Nº Sacas/ha (por peso):</strong> <span id="res_pd_sacas_ha_peso"></span></div>
+                        <div class="result-item"><strong>Nº Bags/ha (por peso):</strong> <span id="res_pd_bags_ha_peso"></span></div>
+                        <div class="result-item"><strong>Kg Semente Total (Talhão):</strong> <span id="res_pd_kg_semente_talhao"></span> kg</div>
+                        <div class="result-item"><strong>Nº Sacas/Talhão:</strong> <span id="res_pd_sacas_talhao"></span></div>
+                        <div class="result-item"><strong>Nº Bags/Talhão:</strong> <span id="res_pd_bags_talhao"></span></div>
+                        <div class="result-item"><strong>Custo/ha:</strong> R$ <span id="res_pd_custo_ha"></span></div>
+                        <div class="result-item"><strong>Custo/Talhão:</strong> R$ <span id="res_pd_custo_talhao"></span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="semeadura_forrageiras_calculator" class="calculator-section hidden">
+                <h2 class="text-2xl font-semibold text-emerald-700 mb-6 text-center">Cálculos de Semeadura para Forrageiras</h2>
+                <form id="forageSeedingForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="sf_cultura" class="block text-sm font-medium text-gray-700 mb-1">Cultura:</label>
+                            <input type="text" id="sf_cultura" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: Aveia Branca">
+                        </div>
+                        <div>
+                            <label for="sf_variedade" class="block text-sm font-medium text-gray-700 mb-1">Variedade:</label>
+                            <input type="text" id="sf_variedade" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: IPR Afrodite">
+                        </div>
+                        <div>
+                            <label for="sf_taxa_recomendada_kg_ha" class="block text-sm font-medium text-gray-700 mb-1">Taxa Recomendada (kg/ha):</label>
+                            <input type="number" id="sf_taxa_recomendada_kg_ha" step="0.1" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: 15">
+                        </div>
+                        <div>
+                            <label for="sf_germinacao" class="block text-sm font-medium text-gray-700 mb-1">Germinação (%):</label>
+                            <input type="number" id="sf_germinacao" step="0.1" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: 88">
+                        </div>
+                        <div>
+                            <label for="sf_pureza" class="block text-sm font-medium text-gray-700 mb-1">Pureza (%):</label>
+                            <input type="number" id="sf_pureza" step="0.1" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: 86">
+                        </div>
+                        <div>
+                            <label for="sf_preco_semente_kg" class="block text-sm font-medium text-gray-700 mb-1">Preço da Semente/kg (R$):</label>
+                            <input type="number" id="sf_preco_semente_kg" step="0.01" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: 27.00">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="sf_area_total_ha" class="block text-sm font-medium text-gray-700 mb-1">Área Total (ha):</label>
+                            <input type="number" id="sf_area_total_ha" step="0.1" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: 67">
+                        </div>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-4 mt-6">
+                        <button type="submit" class="btn-calculate w-full sm:w-auto flex-1 justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
+                            Calcular Semeadura de Forrageira
+                        </button>
+                        <button type="button" id="clearForageSeedingForm" class="btn-clear w-full sm:w-auto flex-1 justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-400">
+                            Limpar Campos
+                        </button>
+                    </div>
+                </form>
+                <div id="forageSeedingError" class="mt-6 p-4 bg-red-50 border border-red-200 rounded-md text-red-700 hidden">
+                    <p>Por favor, preencha todos os campos com valores numéricos válidos.</p>
+                </div>
+                <div id="forageSeedingResult" class="mt-8 hidden">
+                    <h3 class="text-xl font-semibold text-emerald-700 mb-4">Resultados da Semeadura de Forrageiras:</h3>
+                    <div class="result-grid">
+                        <div class="result-item"><strong>Valor Cultural (VC %):</strong> <span id="res_fs_vc"></span> %</div>
+                        <div class="result-item"><strong>Taxa de Semeadura Final (kg/ha):</strong> <span id="res_fs_taxa_final_kg_ha"></span> kg/ha</div>
+                        <div class="result-item"><strong>Quantidade Semente/Área (kg):</strong> <span id="res_fs_qtd_semente_area_kg"></span> kg</div>
+                        <div class="result-item"><strong>Custo/Hectare:</strong> R$ <span id="res_fs_custo_ha"></span></div>
+                        <div class="result-item"><strong>Custo Área Total:</strong> R$ <span id="res_fs_custo_area_total"></span></div>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <p><strong>O valor cultural (VC)</strong> é um parâmetro que indica a qualidade da semente, obtida através da fórmula: <br> VC (%) = (% Germinação * % Pureza) / 100. O resultado é expresso em porcentagem.</p>
+                </div>
+            </div>
+            
+            <div id="tratamento_sementes_calculator" class="calculator-section hidden">
+                <h2 class="text-2xl font-semibold text-emerald-700 mb-6 text-center">Cálculo de Tratamento de Sementes</h2>
+                <form id="seedTreatmentForm" class="space-y-6">
+                    <div>
+                        <h3 class="text-lg font-medium text-emerald-600 mb-3 border-b pb-2">Preencha os dados:</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                            <div>
+                                <label for="st_vol_tanque" class="block text-sm font-medium text-gray-700">Volume do Tanque (L):</label>
+                                <input type="number" id="st_vol_tanque" step="0.1" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: 12">
+                            </div>
+                            <div>
+                                <label for="st_produto_comercial" class="block text-sm font-medium text-gray-700">Produto Comercial:</label>
+                                <input type="text" id="st_produto_comercial" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: Standak Top">
+                            </div>
+                            <div>
+                                <label for="st_vol_calda" class="block text-sm font-medium text-gray-700">Volume de Calda (ml/100kg sem.):</label>
+                                <input type="number" id="st_vol_calda" step="1" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: 550">
+                            </div>
+                             <div>
+                                <label for="st_preco_litro_pc" class="block text-sm font-medium text-gray-700">Preço/litro p.c. (R$):</label>
+                                <input type="number" id="st_preco_litro_pc" step="0.01" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: 320.00">
+                            </div>
+                            <div>
+                                <label for="st_dose_pc_100kg" class="block text-sm font-medium text-gray-700">Dose p.c. (ml/100kg sem.):</label>
+                                <input type="number" id="st_dose_pc_100kg" step="1" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: 250">
+                            </div>
+                            <div>
+                                <label for="st_kg_semente_total" class="block text-sm font-medium text-gray-700">Kg de Semente Total:</label>
+                                <input type="number" id="st_kg_semente_total" step="1" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: 20000">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="st_main_results_section" class="hidden">
+                        <h3 class="text-lg font-medium text-emerald-600 mb-3 border-b pb-2">Principais Resultados:</h3>
+                        <div class="result-grid">
+                            <div class="result-item"><strong>Qtd. p.c. no tanque:</strong> <span id="res_st_qtd_pc_tanque"></span> L</div>
+                            <div class="result-item"><strong>% do Tanque:</strong> <span id="res_st_perc_tanque"></span> %</div>
+                            <div class="result-item"><strong>Total de Produto (p.c.):</strong> <span id="res_st_total_produto_L"></span> L</div>
+                            <div class="result-item"><strong>Custo Total Trat.:</strong> R$ <span id="res_st_custo_total_trat"></span></div>
+                        </div>
+                    </div>
+                     <p class="text-xs text-gray-500 mt-1">* Considera-se também o tanque de mistura da calda, em muitos casos é realizado a mistura antes de adicionar ao tanque da máquina.</p>
+                    <hr class="my-6">
+                    <div class="sub-calculator-section">
+                        <h3 class="text-md font-medium text-emerald-600 mb-3">Desejo tratar "X" Kg de sementes, quanto de produto preciso?</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                            <div>
+                                <label for="st_vol_sem_tratar_cen1" class="block text-sm font-medium text-gray-700">Volume de Sementes a Tratar (Kg):</label>
+                                <input type="number" id="st_vol_sem_tratar_cen1" step="1" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: 20000">
+                            </div>
+                            <div>
+                                <label for="st_dose_pc_cen1" class="block text-sm font-medium text-gray-700">Dose p.c. (ml/100kg sem.):</label>
+                                <input type="number" id="st_dose_pc_cen1" step="1" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: 220">
+                            </div>
+                        </div>
+                        <div id="st_cen1_result_section" class="mt-4 hidden bg-emerald-50 p-3 rounded-md">
+                            <p class="text-sm text-emerald-700"><strong>Qtd. total de p.c. que devo ter:</strong> <span id="res_st_total_pc_cen1"></span> Litros</p>
+                        </div>
+                    </div>
+                     <div class="sub-calculator-section">
+                        <h3 class="text-md font-medium text-emerald-600 mb-3">Tenho "X" Litros de p.c., quantos Kg de sementes trato?</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                            <div>
+                                <label for="st_qtd_pc_disponivel_cen2" class="block text-sm font-medium text-gray-700">Qtd. p.c. disponível (Litros):</label>
+                                <input type="number" id="st_qtd_pc_disponivel_cen2" step="0.1" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: 18">
+                            </div>
+                            <div>
+                                <label for="st_dose_pc_cen2" class="block text-sm font-medium text-gray-700">Dose p.c. (ml/100kg sem.):</label>
+                                <input type="number" id="st_dose_pc_cen2" step="1" class="input-field mt-1 block w-full px-3 py-2 border rounded-md shadow-sm sm:text-sm" placeholder="Ex: 200">
+                            </div>
+                        </div>
+                         <div id="st_cen2_result_section" class="mt-4 hidden bg-emerald-50 p-3 rounded-md">
+                            <p class="text-sm text-emerald-700"><strong>Volume de sementes a ser tratada:</strong> <span id="res_st_vol_sem_tratar_cen2"></span> toneladas</p>
+                        </div>
+                    </div>
+                    <div id="seedTreatmentError" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 hidden">
+                        <p>Por favor, preencha os campos necessários com valores numéricos válidos.</p>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-4 mt-6">
+                        <button type="submit" class="btn-calculate w-full sm:w-auto flex-1 justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium">
+                            Calcular Tratamento
+                        </button>
+                        <button type="button" id="clearSeedTreatmentForm" class="btn-clear w-full sm:w-auto flex-1 justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium">
+                            Limpar Campos
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div id="calagem_camg_calculator" class="calculator-section hidden">
+                <h2 class="text-2xl font-semibold text-emerald-700 mb-6 text-center">Cálculo de Calagem (Necessidade para Elevar Ca, Mg e V%)</h2>
+                <form id="limingCaMgForm" class="space-y-8"> 
+                    <section>
+                        <h3 class="text-xl font-semibold text-emerald-600 mb-4 border-b pb-2">1. Dados da Análise de Solo</h3>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-0 gap-y-6">
+                            <div class="space-y-3 lg:pr-8 lg:border-r lg:border-gray-300 pb-6 mb-6 border-b border-gray-300 lg:border-b-0 lg:pb-0 lg:mb-0">
+                                <h4 class="text-lg font-medium text-gray-700">Valores em <span class="font-bold">mmolc/dm³</span>:</h4>
+                                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                                    <div class="label-input-group"><label for="lc_ph_mmolc">pH:</label><input type="number" id="lc_ph_mmolc" step="0.1" class="input-field w-full" placeholder="5.2"></div>
+                                    <div class="label-input-group"><label for="lc_mo_g_mmolc">M.O (g/dm³):</label><input type="number" id="lc_mo_g_mmolc" step="0.1" class="input-field w-full" placeholder="17"></div>
+                                    <div class="label-input-group"><label for="lc_p_mg_mmolc">P (mg/dm³):</label><input type="number" id="lc_p_mg_mmolc" step="0.1" class="input-field w-full" placeholder="37"></div>
+                                    <div class="label-input-group"><label for="lc_k_mmolc">K (mmolc/dm³):</label><input type="number" id="lc_k_mmolc" step="0.1" class="input-field w-full" placeholder="4.4"></div>
+                                    <div class="label-input-group"><label for="lc_ca_mmolc">Ca (mmolc/dm³):</label><input type="number" id="lc_ca_mmolc" step="0.1" class="input-field w-full" placeholder="30"></div>
+                                    <div class="label-input-group"><label for="lc_mg_mmolc">Mg (mmolc/dm³):</label><input type="number" id="lc_mg_mmolc" step="0.1" class="input-field w-full" placeholder="13"></div>
+                                    <div class="label-input-group sm:col-span-3"><label for="lc_hal_mmolc">H+Al (mmolc/dm³):</label><input type="number" id="lc_hal_mmolc" step="0.1" class="input-field w-full" placeholder="18"></div>
+                                </div>
+                                <h5 class="text-md font-medium text-gray-600 mt-3">Resultados da Análise (mmolc/dm³):</h5>
+                                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                                    <div class="label-input-group"><label>SB:</label><span id="lc_sb_mmolc_display" class="display-field-calc">-</span></div>
+                                    <div class="label-input-group"><label>CTC pH7:</label><span id="lc_ctc_mmolc_display" class="display-field-calc">-</span></div>
+                                    <div class="label-input-group"><label>V%:</label><span id="lc_v_mmolc_display" class="display-field-calc">-</span></div>
+                                    <div class="label-input-group"><label>m%:</label><span id="lc_m_mmolc_display" class="display-field-calc">-</span></div>
+                                    <div class="label-input-group sm:col-span-2"><label>Relação Ca/Mg:</label><span id="lc_camg_ratio_mmolc_display" class="display-field-calc">-</span></div>
+                                </div>
+                                <div id="lc_ph_warn_mmolc" class="ph-warning"></div>
+                            </div>
+
+                            <div class="space-y-3 lg:pl-8">
+                                <h4 class="text-lg font-medium text-gray-700">Valores em <span class="font-bold">cmolc/dm³</span>:</h4>
+                                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                                    <div class="label-input-group"><label for="lc_ph_cmolc">pH:</label><input type="number" id="lc_ph_cmolc" step="0.1" class="input-field w-full" placeholder="6.0"></div>
+                                    <div class="label-input-group"><label for="lc_mo_g_cmolc">M.O (g/dm³):</label><input type="number" id="lc_mo_g_cmolc" step="0.1" class="input-field w-full" placeholder="14"></div>
+                                    <div class="label-input-group"><label for="lc_p_mg_cmolc">P (mg/dm³):</label><input type="number" id="lc_p_mg_cmolc" step="0.1" class="input-field w-full" placeholder="2"></div>
+                                    <div class="label-input-group"><label for="lc_k_cmolc">K (cmolc/dm³):</label><input type="number" id="lc_k_cmolc" step="0.01" class="input-field w-full" placeholder="0.4"></div>
+                                    <div class="label-input-group"><label for="lc_ca_cmolc">Ca (cmolc/dm³):</label><input type="number" id="lc_ca_cmolc" step="0.01" class="input-field w-full" placeholder="3.0"></div>
+                                    <div class="label-input-group"><label for="lc_mg_cmolc">Mg (cmolc/dm³):</label><input type="number" id="lc_mg_cmolc" step="0.01" class="input-field w-full" placeholder="1.3"></div>
+                                    <div class="label-input-group sm:col-span-3"><label for="lc_hal_cmolc">H+Al (cmolc/dm³):</label><input type="number" id="lc_hal_cmolc" step="0.01" class="input-field w-full" placeholder="1.8"></div>
+                                </div>
+                                <h5 class="text-md font-medium text-gray-600 mt-3">Resultados da Análise (cmolc/dm³):</h5>
+                                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                                    <div class="label-input-group"><label>SB:</label><span id="lc_sb_cmolc_display" class="display-field-calc">-</span></div>
+                                    <div class="label-input-group"><label>CTC pH7:</label><span id="lc_ctc_cmolc_display" class="display-field-calc">-</span></div>
+                                    <div class="label-input-group"><label>V%:</label><span id="lc_v_cmolc_display" class="display-field-calc">-</span></div>
+                                    <div class="label-input-group"><label>m%:</label><span id="lc_m_cmolc_display" class="display-field-calc">-</span></div>
+                                    <div class="label-input-group sm:col-span-2"><label>Relação Ca/Mg:</label><span id="lc_camg_ratio_cmolc_display" class="display-field-calc">-</span></div>
+                                </div>
+                                <div id="lc_ph_warn_cmolc" class="ph-warning"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <h3 class="text-xl font-semibold text-emerald-600 mb-4 border-b pb-2">2. Dados do Calcário e da Cultura</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+                            <div class="space-y-3">
+                                <h4 class="text-lg font-medium text-gray-700">Dados do Calcário:</h4>
+                                <div class="label-input-group"><label for="lc_prnt">PRNT (%):</label><input type="number" id="lc_prnt" step="1" class="input-field w-full" placeholder="80"></div>
+                                <div class="label-input-group"><label for="lc_reatividade">Reatividade (%):</label><input type="number" id="lc_reatividade" step="1" class="input-field w-full" placeholder="100"></div>
+                                <div class="label-input-group"><label for="lc_poder_neutralizacao">Poder de Neutralização:</label><input type="number" id="lc_poder_neutralizacao" step="0.1" class="input-field w-full" placeholder="4"></div>
+                            </div>
+                            <div class="space-y-3">
+                                <h4 class="text-lg font-medium text-gray-700">Dados da Cultura:</h4>
+                                <div class="label-input-group"><label for="lc_v_desejado">V% Desejado:</label><input type="number" id="lc_v_desejado" step="1" class="input-field w-full" placeholder="70"></div>
+                            </div>
+                            <div class="space-y-3 lg:mt-8"> 
+                                <h4 class="text-lg font-medium text-gray-700">Ação do Calcário (% do PRNT):</h4>
+                                <div class="result-item"><strong class="text-sm">Em 3 meses:</strong> <span id="lc_acao_3meses_display" class="font-bold">0</span>%</div>
+                                <div class="result-item"><strong class="text-sm">Posterior a 3 meses:</strong> <span id="lc_acao_posterior_display" class="font-bold">0</span>%</div>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <div id="limingCaMgError" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 hidden">
+                        <p>Por favor, preencha os campos necessários com valores numéricos válidos.</p>
+                    </div>
+
+                    <section id="limingCaMgResultsSection" class="hidden">
+                        <h3 class="text-xl font-semibold text-emerald-600 mb-4 border-b pb-2">3. Recomendações de Calagem</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                            <div class="border p-4 rounded-lg bg-emerald-50 space-y-2">
+                                <h4 class="text-lg font-semibold text-emerald-700">Recomendação da Dose (t/ha):</h4>
+                                <p class="text-sm">Proveniente da análise em mmolc/dm³: <strong id="lc_dose_mmolc_display" class="text-xl block text-center py-1">0.00</strong></p>
+                                <p class="text-sm">Proveniente da análise em cmolc/dm³: <strong id="lc_dose_cmolc_display" class="text-xl block text-center py-1">0.00</strong></p>
+                                <p class="text-xs text-gray-600 mt-1">As duas recomendações devem ser iguais se os dados de solo forem consistentes.</p>
+                            </div>
+                            <div class="border p-4 rounded-lg bg-emerald-50 space-y-2">
+                                <h4 class="text-lg font-semibold text-emerald-700">*Recomendação do Tipo de Calcário:</h4>
+                                <p class="text-sm">Baseado em mmolc/dm³: <strong id="lc_tipo_calcario_mmolc_display" class="text-xl block text-center py-1">-</strong></p>
+                                <p class="text-sm">Baseado em cmolc/dm³: <strong id="lc_tipo_calcario_cmolc_display" class="text-xl block text-center py-1">-</strong></p>
+                                <p class="text-xs text-gray-600 mt-1">*Pode variar conforme necessidade da cultura.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                        <button type="submit" class="btn-calculate w-full sm:w-auto flex-1 justify-center py-3 px-4 text-base rounded-md">
+                            Calcular Calagem Ca/Mg
+                        </button>
+                        <button type="button" id="clearLimingCaMgForm" class="btn-clear w-full sm:w-auto flex-1 justify-center py-3 px-4 text-base rounded-md">
+                            Limpar Campos
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div id="calagem_v_calculator" class="calculator-section hidden">
+                <h2 class="text-2xl font-semibold text-emerald-700 mb-6 text-center">Calagem Baseada no V%</h2>
+                <form id="limingVPercentForm" class="space-y-6">
+                    <section>
+                        <h3 class="text-lg font-semibold text-emerald-600 mb-3">Análise de Solo (cmolc/dm³):</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
+                            <div class="label-input-group"><label for="lv_ph">pH (CaCl2):</label><input type="number" id="lv_ph" step="0.01" class="input-field w-full" placeholder="Ex: 5.38"></div>
+                            <div class="label-input-group"><label for="lv_mo">M.O. (g/dm³):</label><input type="number" id="lv_mo" step="0.1" class="input-field w-full" placeholder="Ex: 12.2"></div>
+                            <div class="label-input-group"><label for="lv_p">P (mg/dm³):</label><input type="number" id="lv_p" step="0.01" class="input-field w-full" placeholder="Ex: 26.69"></div>
+                            <div class="label-input-group"><label for="lv_k_soil">K (cmolc/dm³):</label><input type="number" id="lv_k_soil" step="0.01" class="input-field w-full" placeholder="Ex: 0.03"></div>
+                            <div class="label-input-group"><label for="lv_ca_soil">Ca (cmolc/dm³):</label><input type="number" id="lv_ca_soil" step="0.01" class="input-field w-full" placeholder="Ex: 0.96"></div>
+                            <div class="label-input-group"><label for="lv_mg_soil">Mg (cmolc/dm³):</label><input type="number" id="lv_mg_soil" step="0.01" class="input-field w-full" placeholder="Ex: 0.9"></div>
+                            <div class="label-input-group"><label for="lv_hal_soil">H+Al (cmolc/dm³):</label><input type="number" id="lv_hal_soil" step="0.01" class="input-field w-full" placeholder="Ex: 7.21"></div>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-md">
+                            <div><label class="block text-sm text-gray-600">SB (cmolc/dm³):</label><span id="lv_sb_display" class="font-semibold text-emerald-700">-</span></div>
+                            <div><label class="block text-sm text-gray-600">CTC (T) (cmolc/dm³):</label><span id="lv_ctc_display" class="font-semibold text-emerald-700">-</span></div>
+                            <div><label class="block text-sm text-gray-600">V1 Atual (%):</label><span id="lv_v1_display" class="font-semibold text-emerald-700">-</span></div>
+                            <div><label class="block text-sm text-gray-600">m (%):</label><span id="lv_m_display" class="font-semibold text-emerald-700">-</span></div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <h3 class="text-lg font-semibold text-emerald-600 mb-3">Dados para Cálculo da Calagem:</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="label-input-group">
+                                <label for="lv_v2_desired">Saturação por Bases Desejada (V2) (%):</label>
+                                <input type="number" id="lv_v2_desired" step="0.01" class="input-field w-full" placeholder="Ex: 50">
+                            </div>
+                            <div class="label-input-group">
+                                <label for="lv_prnt_limestone">PRNT do Calcário (%):</label>
+                                <input type="number" id="lv_prnt_limestone" step="1" class="input-field w-full" placeholder="Ex: 90">
+                            </div>
+                        </div>
+                    </section>
+
+                    <div id="limingVPercentError" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 hidden">
+                        <p>Por favor, preencha todos os campos com valores numéricos válidos.</p>
+                    </div>
+
+                    <div id="limingVPercentResultSection" class="mt-6 hidden">
+                        <h3 class="text-lg font-semibold text-emerald-700 mb-2">Resultado:</h3>
+                        <div class="result-item text-center">
+                            <strong class="text-base">Necessidade de Calagem (NC):</strong> 
+                            <span id="lv_nc_result" class="font-bold text-2xl block mt-1">0.00</span> 
+                            <span class="text-sm">t/ha</span>
+                        </div>
+                    </div>
+                    
+                    <div class="formula-box mt-6">
+                        <p>NC: Necessidade de Calagem em toneladas por hectare (t/ha)</p>
+                        <p>V1 = % por saturação de bases encontrado na análise de solo (calculado acima)</p>
+                        <p>V2 = % por saturação de bases que se deseja</p>
+                        <p>T = CTC (capacidade de troca de cátions) a pH 7,0 (calculado acima)</p>
+                        <p>f = 100 / PRNT do calcário que será utilizado</p>
+                        <p class="font-bold mt-2">NC = [ ( V2 - V1 ) x T x f ] / 100</p>
+                    </div>
+
+
+                    <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                        <button type="submit" class="btn-calculate w-full sm:w-auto flex-1 justify-center py-3 px-4 text-base rounded-md">
+                            Calcular NC
+                        </button>
+                        <button type="button" id="clearLimingVPercentForm" class="btn-clear w-full sm:w-auto flex-1 justify-center py-3 px-4 text-base rounded-md">
+                            Limpar Campos
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="calibracao_pulverizador_calculator" class="calculator-section hidden">
+                 <h2 class="text-2xl font-semibold text-emerald-700 mb-6 text-center">Calibração de Pulverizador</h2>
+                <form id="sprayerForm" class="space-y-6">
+                    <div>
+                        <label for="targetRate" class="block text-sm font-medium text-gray-700 mb-1">Taxa de Aplicação Desejada (L/ha):</label>
+                        <input type="number" id="targetRate" name="targetRate" step="0.1" class="input-field mt-1 block w-full px-3 py-2" placeholder="Ex: 100">
+                    </div>
+                    <div>
+                        <label for="speed" class="block text-sm font-medium text-gray-700 mb-1">Velocidade de Trabalho (km/h):</label>
+                        <input type="number" id="speed" name="speed" step="0.1" class="input-field mt-1 block w-full px-3 py-2" placeholder="Ex: 5">
+                    </div>
+                    <div>
+                        <label for="nozzleSpacing" class="block text-sm font-medium text-gray-700 mb-1">Espaçamento entre Bicos (m):</label>
+                        <input type="number" id="nozzleSpacing" name="nozzleSpacing" step="0.01" class="input-field mt-1 block w-full px-3 py-2" placeholder="Ex: 0.5">
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-4 mt-6">
+                        <button type="submit" class="btn-calculate w-full sm:w-auto flex-1 justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium">
+                            Calcular Vazão por Bico
+                        </button>
+                        <button type="button" id="clearSprayerForm" class="btn-clear w-full sm:w-auto flex-1 justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium">
+                            Limpar Campos
+                        </button>
+                    </div>
+                </form>
+                <div id="sprayerResult" class="mt-6 p-4 bg-emerald-50 border border-emerald-200 rounded-md text-emerald-700 hidden">
+                    <h3 class="text-lg font-semibold">Resultado:</h3>
+                    <p id="flowRateResult"></p>
+                </div>
+                <div id="sprayerError" class="mt-6 p-4 bg-red-50 border border-red-200 rounded-md text-red-700 hidden">
+                    <p>Por favor, preencha todos os campos com valores numéricos válidos.</p>
+                </div>
+            </div>
+
+            <div id="formulacao_adubos_calculator" class="calculator-section hidden">
+                 <h2 class="text-2xl font-semibold text-emerald-700 mb-4 text-center">Formulação de Adubos</h2>
+                <p class="text-gray-600 text-center">Calculadora em desenvolvimento. Em breve disponível!</p>
+            </div>
+            <div id="gestao_aplicacao_calculator" class="calculator-section hidden">
+                <h2 class="text-2xl font-semibold text-emerald-700 mb-4 text-center">Gestão de Aplicação</h2>
+                <p class="text-gray-600 text-center">Calculadora em desenvolvimento. Em breve disponível!</p>
+            </div>
+            <div id="produtividade_soja_calculator" class="calculator-section hidden">
+                <h2 class="text-2xl font-semibold text-emerald-700 mb-4 text-center">Produtividade de Soja</h2>
+                <p class="text-gray-600 text-center">Calculadora em desenvolvimento. Em breve disponível!</p>
+            </div>
+            <div id="soja_cesb_calculator" class="calculator-section hidden">
+                <h2 class="text-2xl font-semibold text-emerald-700 mb-4 text-center">Soja (CESB)</h2>
+                <p class="text-gray-600 text-center">Calculadora em desenvolvimento. Em breve disponível!</p>
+            </div>
+            <div id="produtividade_milho_calculator" class="calculator-section hidden">
+                <h2 class="text-2xl font-semibold text-emerald-700 mb-4 text-center">Produtividade Milho</h2>
+                <p class="text-gray-600 text-center">Calculadora em desenvolvimento. Em breve disponível!</p>
+            </div>
+            <div id="produtividade_algodao_calculator" class="calculator-section hidden">
+                <h2 class="text-2xl font-semibold text-emerald-700 mb-4 text-center">Produtividade Algodão</h2>
+                <p class="text-gray-600 text-center">Calculadora em desenvolvimento. Em breve disponível!</p>
+            </div>
+            <div id="welcome-message" class="calculator-section text-center">
+                <h2 class="text-2xl font-semibold text-emerald-700 mb-4">Bem-vindo à Planilha Agronômica!</h2>
+                <p class="text-gray-600">Selecione uma calculadora acima para começar.</p>
+            </div>
+        </div>
+    </div>
+
+    <button id="scrollToTopBtn" title="Voltar ao topo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+
+    <script src="main.js"></script>
+</body>
+</html>
